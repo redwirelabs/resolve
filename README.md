@@ -76,3 +76,13 @@ Resolve.inject(Port, quote do
   def command(_port, _data), do: :ok
 end)
 ```
+
+### Reverting a mapping
+
+If dependencies are resolved at runtime, any injected dependencies for a module
+can be removed by calling `revert/1`. This removes any mappings for the module
+from the lookup table.
+
+```elixir
+Resolve.revert(Module)
+```
