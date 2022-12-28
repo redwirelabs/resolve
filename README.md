@@ -2,6 +2,20 @@
 
 Dependency injection and resolution at compile time or runtime.
 
+Resolve is designed for swapping out dependencies in multi-target systems,
+like embedded / IoT devices, where different hardware may be available depending
+on which target the firmware is running on, or where physical hardware may be
+missing all together when running the firmware on the host for development and
+testing. That being said, Resolve also works for the traditional case of unit
+testing, as the test environment is essentially just another type of target.
+
+Resolve can be used in conjunction with mocks for testing, as they each have
+their own advantages. Resolve has the benefit of not being linked to a process,
+which means Resolve can be helpful for testing GenServers or other code that
+runs in a process your test doesn't have direct access to. Resolve also allows
+you to create throw-away anonymous modules for unit tests, rather than creating
+named mock modules or factories.
+
 ## Installation
 
 The package can be installed by adding `resolve` to your list of dependencies
