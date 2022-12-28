@@ -24,7 +24,7 @@ in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:resolve, "~> 0.0.1"}
+    {:resolve, "~> 0.1.0"}
   ]
 end
 ```
