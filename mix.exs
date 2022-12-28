@@ -12,12 +12,18 @@ defmodule Resolve.MixProject do
       deps: deps(),
       docs: docs(),
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls, test_task: "espec"],
       dialyzer: [
         ignore_warnings: "dialyzer.ignore.exs",
         list_unused_filters: true,
         plt_file: {:no_warn, plt_file_path()},
       ],
       preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.show": :test,
         espec: :test,
       ],
     ]
@@ -32,8 +38,9 @@ defmodule Resolve.MixProject do
 
   defp aliases do
     [
+      "coveralls.show": ["coveralls.html", &open("cover/excoveralls.html", &1)],
       "docs.show": ["docs", &open("doc/index.html", &1)],
-      test: "espec",
+      test: "coveralls",
     ]
   end
 
@@ -43,6 +50,7 @@ defmodule Resolve.MixProject do
     [
       {:dialyxir, "~> 1.2", only: :dev, runtime: false},
       {:espec, "~> 1.9", only: :test},
+      {:excoveralls, "~> 0.15", only: :test},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
     ]
   end
