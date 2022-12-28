@@ -34,12 +34,11 @@ defmodule DI do
 
 
   ```elixir
-  config :<app>, di: %{
+  config :resolve,
     compile: true,
     mappings: [
       {OriginalModule, InjectedModule},
     ]
-  }
   ```
 
   ### Runtime
@@ -74,11 +73,10 @@ defmodule DI do
     end
   end
 
-  @compile? !!Application.compile_env(:resolve, :di, [])[:compile]
+  @compile? !!Application.compile_env(:resolve, :compile, false)
 
   @mappings \
-    Application.compile_env(:resolve, :di, %{})
-    |> Map.get(:mappings, [])
+    Application.compile_env(:resolve, :mappings, [])
     |> Enum.into(%{})
 
   @doc """
