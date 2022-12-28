@@ -1,25 +1,25 @@
-defmodule DI do
+defmodule Resolve do
   @moduledoc """
-  Dependency injection
+  Dependency injection and resolution at compile time or runtime
 
   ## Usage
 
-  Include DI in the module that requires dependency injection with `use DI`.
-  Any place in that module that might need a dependency injected can then use
-  `di(<module>)` to allow another module to be injected. The module passed to
-  `di/1` will be used if another module isn't injected.
+  Include resolve in the module that requires dependency injection with
+  `use Resolve`. Any place in that module that might need a dependency injected
+  can then use `resolve(<module>)` to allow another module to be injected. The
+  module passed to `resolve/1` will be used if another module isn't injected.
 
   ```elixir
   defmodule MyInterface do
-    use DI
+    use Resolve
 
-    def some_command, do: di(__MODULE__).some_command
+    def some_command, do: resolve(__MODULE__).some_command
   end 
   ```
 
   ### Configuration
 
-  DI can be configured in the project's `config.exs`.
+  Resolve can be configured in the project's `config.exs`.
 
   **Opts**
   - `compile` - (false) - Sets the mappings at compile time and doesn't start \
@@ -49,14 +49,14 @@ defmodule DI do
   a read-optimized ETS table.
 
   ```elixir
-  DI.inject(OriginalModule, InjectedModule)
+  Resolve.inject(OriginalModule, InjectedModule)
   ```
 
   Modules can also be defined directly in a block, which can be helpful if they
   are only needed for certain tests.
 
   ```elixir
-  DI.inject(Port, quote do
+  Resolve.inject(Port, quote do
     def open(_name, _opts), do: self()
 
     def close(_port), do: :ok
@@ -69,7 +69,7 @@ defmodule DI do
   defmacro __using__(_) do
     quote do
       @doc false
-      defdelegate di(module), to: DI
+      defdelegate resolve(module), to: Resolve
     end
   end
 
@@ -80,21 +80,21 @@ defmodule DI do
     |> Enum.into(%{})
 
   @doc """
-  Flag a module as eligible for dependency injection.
+  Flag a module as eligible for dependency injection / resolution.
 
   Defaults to `module` unless a new dependency is injected in its place.
   """
-  @spec di(module :: module) :: module
-  def di(module), do: di(module, @compile?)
+  @spec resolve(module :: module) :: module
+  def resolve(module), do: resolve(module, @compile?)
 
-  defp di(module, _compile? = true) do
+  defp resolve(module, _compile? = true) do
     @mappings[module] || module
   end
 
-  defp di(module, _compile? = false) do
+  defp resolve(module, _compile? = false) do
     ensure_ets_is_running()
 
-    case :ets.lookup(:di, module) do
+    case :ets.lookup(:resolve, module) do
       []                     -> @mappings[module] || module
       [{_, injected_module}] -> injected_module
     end
@@ -107,7 +107,7 @@ defmodule DI do
   def inject(target_module, injected_module) when is_atom(injected_module) do
     ensure_ets_is_running()
 
-    :ets.insert(:di, {target_module, injected_module})
+    :ets.insert(:resolve, {target_module, injected_module})
 
     :ok
   end
@@ -124,21 +124,21 @@ defmodule DI do
   @doc """
   Revert this dependency to the original module.
 
-  This function is idempotent and will not fail if DI already points to the
-  original module.
+  This function is idempotent and will not fail if Resolve already points to
+  the original module.
   """
   @spec revert(module :: module) :: any
   def revert(module) do
     ensure_ets_is_running()
 
-    :ets.delete(:di, module)
+    :ets.delete(:resolve, module)
 
     :ok
   end
 
   defp ensure_ets_is_running do
-    case :ets.whereis(:di) do
-      :undefined -> :ets.new(:di, [:public, :named_table, read_concurrency: true])
+    case :ets.whereis(:resolve) do
+      :undefined -> :ets.new(:resolve, [:public, :named_table, read_concurrency: true])
       table_id   -> table_id
     end
   end
