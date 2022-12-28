@@ -17,6 +17,9 @@ defmodule Resolve.MixProject do
         list_unused_filters: true,
         plt_file: {:no_warn, plt_file_path()},
       ],
+      preferred_cli_env: [
+        espec: :test,
+      ],
     ]
   end
 
@@ -30,6 +33,7 @@ defmodule Resolve.MixProject do
   defp aliases do
     [
       "docs.show": ["docs", &open("doc/index.html", &1)],
+      test: "espec",
     ]
   end
 
@@ -38,6 +42,7 @@ defmodule Resolve.MixProject do
   defp deps do
     [
       {:dialyxir, "~> 1.2", only: :dev, runtime: false},
+      {:espec, "~> 1.9", only: :test},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
     ]
   end
