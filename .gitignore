@@ -24,3 +24,6 @@ resolve-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignore the lock file for libraries.
+mix.lock
