@@ -1,0 +1,49 @@
+on:
+  - push
+  - pull_request
+
+jobs:
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-22.04
+    env:
+      MIX_ENV: test
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "25.2"
+          elixir-version: "1.14.2"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get dependencies
+        run: mix deps.get --only test
+      - name: Run unit tests
+        run: mix test
+
+  type_check:
+    name: Type Check
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "25.2"
+          elixir-version: "1.14.2"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get dependencies
+        run: mix deps.get --only dev
+      - name: Restore PLTs
+        uses: actions/cache@v1
+        with:
+          path: _build/dev/plt
+          key: plt-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            plt-${{ github.ref }}-${{ github.sha }}
+            plt-${{ github.ref }}-
+            plt-refs/heads/master-
+      - name: Compile
+        run: mix compile
+      - name: Run dialyzer
+        run: mix dialyzer
