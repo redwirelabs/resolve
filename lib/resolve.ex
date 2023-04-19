@@ -73,6 +73,21 @@ defmodule Resolve do
     :ok
   end
 
+  @doc """
+  Revert all dependencies to their original modules.
+
+  This can be used when unit testing to ensure dependencies are cleared out
+  between tests.
+  """
+  @spec revert_all() :: any
+  def revert_all do
+    ensure_ets_is_running()
+
+    :ets.delete_all_objects(:resolve)
+
+    :ok
+  end
+
   defp ensure_ets_is_running do
     case :ets.whereis(:resolve) do
       :undefined -> :ets.new(:resolve, [:public, :named_table, read_concurrency: true])
