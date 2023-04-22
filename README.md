@@ -100,22 +100,3 @@ from the lookup table.
 ```elixir
 Resolve.revert(Module)
 ```
-
-### Unit testing
-
-It can be more convenient to revert all of the dependencies after each unit test
-runs, rather than keeping track of and reverting individual dependencies. This
-can be done with the `revert_all` function if it is placed in a test helper or
-configuration file, depending on how your test suite works.
-
-ESpec example:
-
-```ex
-# spec_helper.exs
-
-ESpec.configure(fn config ->
-  config.finally(fn _shared ->
-    Resolve.revert_all
-  end)
-end)
-```

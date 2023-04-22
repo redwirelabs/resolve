@@ -73,12 +73,12 @@ defmodule Resolve do
     :ok
   end
 
-  @doc """
-  Revert all dependencies to their original modules.
-
-  This can be used when unit testing to ensure dependencies are cleared out
-  between tests.
-  """
+  @doc false
+  # Revert all dependencies to their original modules.
+  #
+  # This function may be helpful in some cases for unit testing or
+  # troubleshooting. However, something unrelated to Resolve is likely
+  # wrong if you're reaching for this.
   @spec revert_all() :: any
   def revert_all do
     ensure_ets_is_running()
