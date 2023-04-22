@@ -4,7 +4,7 @@ defmodule Resolve.MixProject do
   def project do
     [
       app: :resolve,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.14",
       aliases: aliases(),
       description: description(),
