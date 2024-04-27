@@ -4,7 +4,7 @@ defmodule Resolve.MixProject do
   def project do
     [
       app: :resolve,
-      version: "0.2.1",
+      version: "1.0.0",
       elixir: "~> 1.14",
       aliases: aliases(),
       description: description(),
@@ -70,7 +70,7 @@ defmodule Resolve.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/amclain/resolve"},
+      links: %{"GitHub" => "https://github.com/redwirelabs/resolve"},
       maintainers: ["Alex McLain"],
       files: [
         "lib",
